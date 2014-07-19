@@ -5,8 +5,8 @@ from .utils import import_mvl
 
 
 class VariableAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'code', 'short_name', 'category')
-    list_filter = ('code', 'short_name', 'used')
+    list_display = ('long_name', 'year', 'code', 'short_name', 'category', 'used')
+    list_filter = ('code', 'short_name', 'year', 'used')
     list_per_page = 250  # limit of 250 variables per report
     search_fields = ('category', 'long_name')
 

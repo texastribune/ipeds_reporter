@@ -25,3 +25,16 @@ In your virtualenv:
     make resetdb
     python manage.py createsuperuser
     make start
+
+Bootstrapping some data:
+
+1. Navigate to "Import MVL" http://localhost:8000/ipeds_reporter/importer/
+2. Import the sample fixture located at `ipeds/reporter/fixtures/sample.mvl`
+
+Exporting all variables:
+
+1. Navigate to http://localhost:8000/ipeds_reporter/variable/
+2. Select all
+3. Click the "Select all ... variables" link to select more than the first page
+4. Select the "Make MVL" admin action
+5. Save that file someplace special

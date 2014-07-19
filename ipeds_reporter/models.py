@@ -26,11 +26,15 @@ class Variable(models.Model):
     short_name = models.CharField(max_length=8)
     category = models.CharField(max_length=150)
     long_name = models.CharField(max_length=80)
-    raw = models.CharField(max_length=800, unique=True)
-    used = models.BooleanField(default=False)
+    raw = models.CharField(max_length=800, unique=True)  # XXX not all database
+                                                         # backends like this
 
     # derived data
-    year = models.CharField(max_length=4)  # TODO
+    year = models.CharField(max_length=4,
+        help_text=u'The academic year (based on the fall)')
+
+    # user entered data
+    used = models.BooleanField(default=False)
 
     # MANAGERS #
     objects = VariableManager()
@@ -52,3 +56,7 @@ class Importer(models.Model):
     class Meta:
         verbose_name = 'variables'  # HACK to label admin link
         verbose_name_plural = 'Import MVL'  # HACK to label admin link
+
+    def __unicode__(self):
+        return u'{} {} / {}'.format(
+            self.imported_at, self.variables_new, self.variables_total)
