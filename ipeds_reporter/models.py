@@ -19,7 +19,8 @@ class Importer(models.Model):
     imported_at = models.DateTimeField(auto_now_add=True)
     variables_total = models.PositiveSmallIntegerField(null=True, blank=True)
     variables_new = models.PositiveSmallIntegerField(null=True, blank=True)
+    # WISHLIST keep track of `User`
 
     class Meta:
-        verbose_name = 'variables'
+        verbose_name = 'variables'  # HACK to label admin link
         verbose_name_plural = 'Import MVL'  # HACK to label admin link

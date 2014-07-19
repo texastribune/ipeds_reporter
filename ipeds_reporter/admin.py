@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import Variable, Importer
+from .utils import import_mvl
 
 
 class VariableAdmin(admin.ModelAdmin):
@@ -33,5 +34,8 @@ class ImporterAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """HACK to keep admin from actually saving anything."""
+        total, n_created = import_mvl(form.files['mvl_file'])
+        obj.variables_total = total
+        obj.variables_new = n_created
         obj.save()
 admin.site.register(Importer, ImporterAdmin)

@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import csv
 import logging
 import os
@@ -6,14 +7,18 @@ import re
 from collections import defaultdict
 
 from project_runpy import ColorizingStreamHandler
-from utils.handlers import JSONFileHandler
+# from utils.handlers import JSONFileHandler
+
+from .models import Variable
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(ColorizingStreamHandler())
 logfile = os.environ.get('THEDP_IMPORT_LOGFILE')
 if logfile:
-    logger.addHandler(JSONFileHandler(logfile))
+    pass
+    # TODO
+    # logger.addHandler(JSONFileHandler(logfile))
 
 
 class IpedsCsvReader(object):
@@ -83,7 +88,6 @@ class IpedsCsvReader(object):
                 logger.info("%s" % (instance), extra=dict(json=log_data))
 
     def explain_header(self):
-        from .models import Variable
         name_set = set()
         for cell in self.header:
             try:
@@ -98,3 +102,23 @@ class IpedsCsvReader(object):
             name_set.add(name)
             print name, code, var.long_name if var else ""
         print "%d Unique Variables: %s" % (len(name_set), sorted(name_set))
+
+
+def import_mvl(fh):
+    """
+    Takes a filehandle and extracts the variable within.
+    """
+    counter = 0
+    n_created = 0
+    for row in fh:
+        counter += 1
+        bits = row.split('|')
+        code, short_name, category, long_name = bits[:4]
+        code = re.match(r'(DRV)?([a-zA-Z]+)', code).groups()[1]
+        data = dict(code=code,
+                    short_name=short_name,
+                    category=category,
+                    long_name=long_name)
+        variable, created = Variable.objects.get_or_create(raw=row, defaults=data)
+        n_created += created
+    return counter, n_created
