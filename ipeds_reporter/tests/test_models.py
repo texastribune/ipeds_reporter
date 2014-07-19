@@ -42,3 +42,15 @@ class VariableManagerTest(TestCase):
         self.assertEqual(variable.category, 'Foo')
         self.assertEqual(variable.long_name, 'Fooey')
         self.assertEqual(variable.year, '2000')
+
+    def test_get_or_create_from_mvl_strips_handles_weird_years(self):
+        # assert we're testing VariableManager
+        self.assertIsInstance(Variable.objects, VariableManager)
+
+        row = 'FOO0203|FOO|Foo|Fooey||||||||||||||||||||||||'
+        variable, created = Variable.objects.get_or_create_from_mvl(row)
+        self.assertEqual(variable.year, '2002')
+
+        row = 'FOO1011|FOO|Foo|Fooey||||||||||||||||||||||||'
+        variable, created = Variable.objects.get_or_create_from_mvl(row)
+        self.assertEqual(variable.year, '2010')

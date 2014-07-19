@@ -10,6 +10,10 @@ class VariableManager(models.Manager):
         raw_code, short_name, category, long_name = bits[:4]
         butts = re.match(r'(DRV)?([a-zA-Z]+)(\d{4})', raw_code).groups()
         __, code, year = butts
+        # sometimes they cram two years in (Fall/Spring), so just use the Fall
+        if int(year[:2]) == int(year[2:]) - 1:
+            # I've only found post Y2K years this has happened
+            year = u'20' + year[:2]
         data = dict(
             code=code,
             short_name=short_name,
