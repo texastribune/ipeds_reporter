@@ -111,14 +111,7 @@ def import_mvl(fh):
     counter = 0
     n_created = 0
     for row in fh:
+        variable, created = Variable.objects.get_or_create_from_mvl(row)
         counter += 1
-        bits = row.split('|')
-        code, short_name, category, long_name = bits[:4]
-        code = re.match(r'(DRV)?([a-zA-Z]+)', code).groups()[1]
-        data = dict(code=code,
-                    short_name=short_name,
-                    category=category,
-                    long_name=long_name)
-        variable, created = Variable.objects.get_or_create(raw=row, defaults=data)
         n_created += created
     return counter, n_created
