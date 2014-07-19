@@ -10,7 +10,7 @@ help:
 
 
 clean:
-	find -name "*.pyc" -delete
+	find . -name "*.pyc" -delete
 	find . -name ".DS_Store" -delete
 	rm -rf MANIFEST
 	rm -rf build
@@ -20,6 +20,10 @@ clean:
 
 test:
 	ENVIRONMENT=test $(MANAGE) test
+
+
+start:
+	$(MANAGE) runserver 0.0.0.0:8000
 
 
 resetdb:

@@ -23,3 +23,5 @@ In your virtualenv:
 
     pip install -r requirements.txt
     make resetdb
+    python manage.py createsuperuser
+    make start
