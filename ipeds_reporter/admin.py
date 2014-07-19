@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Variable
+from .models import Variable, Importer
 
 
 class VariableAdmin(admin.ModelAdmin):
@@ -25,5 +25,13 @@ class VariableAdmin(admin.ModelAdmin):
     def mark_unused(self, request, queryset):
         queryset.update(used=False)
     actions = ['make_MVL', 'mark_used', 'mark_unused']
-
 admin.site.register(Variable, VariableAdmin)
+
+
+class ImporterAdmin(admin.ModelAdmin):
+    readonly_fields = ('variables_total', 'variables_new')
+
+    def save_model(self, request, obj, form, change):
+        """HACK to keep admin from actually saving anything."""
+        obj.save()
+admin.site.register(Importer, ImporterAdmin)
