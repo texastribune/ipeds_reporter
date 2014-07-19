@@ -24,5 +24,5 @@ test:
 
 resetdb:
 	$(MANAGE) reset_db --noinput
-	$(MANAGE) migrate --noinput
+	$(MANAGE) syncdb --noinput
 
