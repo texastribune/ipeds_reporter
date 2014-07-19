@@ -27,6 +27,6 @@ start:
 
 
 resetdb:
-	$(MANAGE) reset_db --noinput
+	$(MANAGE) sqlclear ipeds_reporter | $(MANAGE) dbshell
 	$(MANAGE) syncdb --noinput
 
