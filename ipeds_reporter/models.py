@@ -35,13 +35,16 @@ class Variable(models.Model):
 
     # derived data
     year = models.CharField(max_length=4,
-        help_text=u'The academic year (based on the fall)')
+        help_text=u'The academic year (based on the Fall)')
 
     # user entered data
     used = models.BooleanField(default=False)
 
     # MANAGERS #
     objects = VariableManager()
+
+    class Meta:
+        ordering = ('code', 'short_name', 'year')
 
     def __unicode__(self):
         return u'{} ({})'.format(self.short_name, self.year)
