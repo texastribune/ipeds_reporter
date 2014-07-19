@@ -7,13 +7,15 @@ class VariableManager(models.Manager):
     def get_or_create_from_mvl(self, raw):
         """Get or create from line in MVL."""
         bits = raw.split('|')
-        code, short_name, category, long_name = bits[:4]
-        code = re.match(r'(DRV)?([a-zA-Z]+)', code).groups()[1]
+        raw_code, short_name, category, long_name = bits[:4]
+        butts = re.match(r'(DRV)?([a-zA-Z]+)(\d{4})', raw_code).groups()
+        __, code, year = butts
         data = dict(
             code=code,
             short_name=short_name,
             category=category,
             long_name=long_name,
+            year=year,
         )
         return self.get_or_create(raw=raw, defaults=data)
 

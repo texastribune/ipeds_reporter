@@ -15,6 +15,7 @@ class VariableManagerTest(TestCase):
         self.assertEqual(variable.short_name, 'FOO')
         self.assertEqual(variable.category, 'Foo')
         self.assertEqual(variable.long_name, 'Fooey')
+        self.assertEqual(variable.year, '2000')
 
     def test_get_or_create_from_mvl_strips_DRV(self):
         # assert we're testing VariableManager
@@ -27,6 +28,7 @@ class VariableManagerTest(TestCase):
         self.assertEqual(variable.short_name, 'FOO')
         self.assertEqual(variable.category, 'Foo')
         self.assertEqual(variable.long_name, 'Fooey')
+        self.assertEqual(variable.year, '2000')
 
     def test_get_or_create_from_mvl_strips_DRV_and_suffix(self):
         # assert we're testing VariableManager
@@ -39,3 +41,4 @@ class VariableManagerTest(TestCase):
         self.assertEqual(variable.short_name, 'FOO')
         self.assertEqual(variable.category, 'Foo')
         self.assertEqual(variable.long_name, 'Fooey')
+        self.assertEqual(variable.year, '2000')
