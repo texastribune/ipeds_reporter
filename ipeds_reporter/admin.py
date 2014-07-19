@@ -5,8 +5,8 @@ from .utils import import_mvl
 
 
 class VariableAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'year', 'code', 'short_name', 'category', 'used')
-    list_filter = ('code', 'short_name', 'year', 'used')
+    list_display = ('long_name', 'year', 'code', 'short_name', 'category', 'favorite')
+    list_filter = ('code', 'short_name', 'year', 'favorite')
     list_per_page = 250  # limit of 250 variables per report
     readonly_fields = ('code', 'short_name', 'category', 'long_name', 'raw', 'year')
     search_fields = ('category', 'long_name')
@@ -21,12 +21,12 @@ class VariableAdmin(admin.ModelAdmin):
         response['Content-Disposition'] = 'attachment; filename=ipeds-%s.mvl' % filename
         return response
 
-    def mark_used(self, request, queryset):
-        queryset.update(used=True)
+    def mark_favorite(self, request, queryset):
+        queryset.update(favorite=True)
 
-    def mark_unused(self, request, queryset):
-        queryset.update(used=False)
-    actions = ['make_MVL', 'mark_used', 'mark_unused']
+    def unmark_favorite(self, request, queryset):
+        queryset.update(favorite=False)
+    actions = ['make_MVL', 'mark_favorite', 'unmark_favorite']
 admin.site.register(Variable, VariableAdmin)
 
 

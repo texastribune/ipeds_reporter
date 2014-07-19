@@ -38,7 +38,7 @@ class Variable(models.Model):
         help_text=u'The academic year (based on the Fall)')
 
     # user entered data
-    used = models.BooleanField(default=False)
+    favorite = models.BooleanField(default=False)
 
     # MANAGERS #
     objects = VariableManager()
