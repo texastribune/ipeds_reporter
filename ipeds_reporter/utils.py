@@ -22,6 +22,14 @@ if logfile:
 
 
 class IpedsCsvReader(object):
+    """
+    A special CSV reader for IPEDS reports.
+
+    TODO remove Django model dependency.
+
+    temp instructions for now
+    run IpedsCsvReader, then parse_rows
+    """
     field_mapping = None
     primary_mapping = None
     year_type = None
@@ -37,6 +45,9 @@ class IpedsCsvReader(object):
         return csv.reader(fh)
 
     def parse_header(self):
+        """
+        Extract information about what variables are in the CSV.
+        """
         header = self._reader.next()
         self.header = header
         if self.field_mapping is None:
@@ -49,6 +60,7 @@ class IpedsCsvReader(object):
                 primary_idx = idx
                 continue
             try:
+                # TODO use same tested regexp VariableManager uses
                 name, year = re.match(r'(\w+)\([a-zA-Z]+(\d+)', cell).groups()
             except AttributeError:
                 continue
@@ -58,6 +70,9 @@ class IpedsCsvReader(object):
         self.years_data = years
 
     def parse_rows(self, institution_model, report_model):
+        """
+        Do stuff.
+        """
         report_name = report_model.__name__
         for row in self._reader:
             if len("".join(row[2:])) == 0:
@@ -88,6 +103,9 @@ class IpedsCsvReader(object):
                 logger.info("%s" % (instance), extra=dict(json=log_data))
 
     def explain_header(self):
+        """
+        Explain what header information was extracted.
+        """
         name_set = set()
         for cell in self.header:
             try:
