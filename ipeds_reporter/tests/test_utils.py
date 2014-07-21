@@ -14,6 +14,8 @@ class IpedsCSVReaderTest(TestCase):
             reader = IpedsCSVReader(fh)
             print reader.header
             print reader.header_parsed
+            for row in reader:
+                print row
 
 
 class ImportMVLTest(TestCase):

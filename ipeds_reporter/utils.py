@@ -4,7 +4,6 @@ import csv
 import logging
 import os
 import re
-from collections import defaultdict
 
 from project_runpy import ColorizingStreamHandler
 # from utils.handlers import JSONFileHandler
@@ -31,6 +30,7 @@ class IpedsCSVReader(object):
     run IpedsCsvReader, then parse_rows
     """
     header = None
+    header_parsed = None
 
     def __init__(self, fh, **kwargs):
         for key, value in kwargs.items():
@@ -50,7 +50,11 @@ class IpedsCSVReader(object):
         self.header = header
         header_parsed = [None for __ in header]
         # the first two columns are the institution id and name
-        for idx, cell in enumerate(header[2:], start=2):
+        for idx, cell in enumerate(header):
+            if idx < 2:
+                header_parsed[idx] = cell
+                continue
+            # DELETEME this is just a hack to get around the last empty col
             if not cell:
                 continue
             short_name, raw_code = re.match(r'([A-Z0-9]+)\s\((\w+)\)', cell).groups()
@@ -64,38 +68,13 @@ class IpedsCSVReader(object):
             header_parsed[idx] = short_name, year, raw_code
         self.header_parsed = header_parsed
 
-    def parse_rows(self, institution_model, report_model):
+    def __iter__(self):
         """
         Do stuff.
         """
-        report_name = report_model.__name__
+        assert self.header_parsed is not None
         for row in self._reader:
-            if len("".join(row[2:])) == 0:
-                # skip empty rows
-                continue
-            inst = institution_model.objects.get(ipeds_id=row[self.primary_idx])
-            for year in self.years_data:
-                new_data = dict()
-                for idx, name in self.years_data[year]:
-                    if row[idx]:
-                        new_data[name] = row[idx]
-                if new_data:
-                    instance, created = report_model.objects.get_or_create(
-                        institution=inst, year=year,
-                        defaults=dict(year_type=self.year_type))
-                    instance.__dict__.update(new_data)
-                    instance.save()
-                else:
-                    # skip empty data
-                    continue
-                # TODO only log changed data
-                # TODO make ints ints, decimals strings, floats float
-                # camelCase for better JSON compatibility
-                log_data = dict(firstImport=created,  # `created` is reserved
-                                instPk=inst.pk, instName=inst.name, year=year,
-                                report=report_name, newData=new_data,
-                                source="ipeds")
-                logger.info("%s" % (instance), extra=dict(json=log_data))
+            yield zip(self.header_parsed, row)
 
     def explain_header(self):
         """
