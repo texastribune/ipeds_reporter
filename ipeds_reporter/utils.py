@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from collections import namedtuple
 import csv
 import logging
 import os
@@ -23,11 +24,6 @@ if logfile:
 class IpedsCSVReader(object):
     """
     A special CSV reader for IPEDS reports.
-
-    TODO remove Django model dependency.
-
-    temp instructions for now
-    run IpedsCsvReader, then parse_rows
     """
     header = None
     header_parsed = None
@@ -49,6 +45,7 @@ class IpedsCSVReader(object):
         header = self._reader.next()
         self.header = header
         header_parsed = [None for __ in header]
+        IPEDSCell = namedtuple('IPEDSCell', 'short_name, year, raw_code')
         # the first two columns are the institution id and name
         for idx, cell in enumerate(header):
             if idx < 2:
@@ -65,7 +62,7 @@ class IpedsCSVReader(object):
                 # I've only found post Y2K years this has happened
                 year = u'20' + year[:2]
             # XXX end
-            header_parsed[idx] = short_name, year, raw_code
+            header_parsed[idx] = IPEDSCell(short_name, year, raw_code)
         self.header_parsed = header_parsed
 
     def __iter__(self):
