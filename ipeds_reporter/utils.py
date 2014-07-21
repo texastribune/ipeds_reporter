@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 import csv
 import logging
 import os
@@ -77,20 +77,17 @@ class IpedsCSVReader(object):
         """
         Explain what header information was extracted.
         """
-        name_set = set()
-        for cell in self.header:
-            try:
-                name, code = re.match(r'(\w+)\((\w+)\)', cell).groups()
-                var = Variable.objects.filter(raw__startswith="%s|%s|" % (code, name))[0]
-            except AttributeError:
-                continue
-            except IndexError:
-                name = "????"
-                code = cell
-                var = None
-            name_set.add(name)
-            print name, code, var.long_name if var else ""
-        print "%d Unique Variables: %s" % (len(name_set), sorted(name_set))
+        cells = [x for x in self.header_parsed if isinstance(x, tuple)]
+        short_names = [x.short_name for x in cells]
+        unique_short_name = list(set(short_names))
+        years = defaultdict(list)
+        for cell in cells:
+            years[cell.short_name].append(cell.year)
+        return {
+            'columns': len(cells),  # shape
+            'unique short_names': unique_short_name,
+            'years': years,
+        }
 
 
 def import_mvl(fh):
