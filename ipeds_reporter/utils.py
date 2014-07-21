@@ -21,7 +21,7 @@ if logfile:
     # logger.addHandler(JSONFileHandler(logfile))
 
 
-class IpedsCsvReader(object):
+class IpedsCSVReader(object):
     """
     A special CSV reader for IPEDS reports.
 
@@ -30,9 +30,7 @@ class IpedsCsvReader(object):
     temp instructions for now
     run IpedsCsvReader, then parse_rows
     """
-    field_mapping = None
-    primary_mapping = None
-    year_type = None
+    header = None
 
     def __init__(self, fh, **kwargs):
         for key, value in kwargs.items():
@@ -50,23 +48,13 @@ class IpedsCsvReader(object):
         """
         header = self._reader.next()
         self.header = header
-        if self.field_mapping is None:
-            return
         years = defaultdict(list)
-        fields = dict(self.field_mapping)
-        primary_idx = None
-        for idx, cell in enumerate(header):
-            if cell == self.primary_mapping[0]:
-                primary_idx = idx
+        for idx, cell in enumerate(header[2:]):
+            if not cell:
                 continue
-            try:
-                # TODO use same tested regexp VariableManager uses
-                name, year = re.match(r'(\w+)\([a-zA-Z]+(\d+)', cell).groups()
-            except AttributeError:
-                continue
-            if name in fields:
-                years[year].append((idx, fields[name]))
-        self.primary_idx = primary_idx
+            print idx, cell
+            name, year = re.match(r'([A-Z0-9]+)\s\((\w+)\)', cell).groups()
+            years[year].append((idx, name))
         self.years_data = years
 
     def parse_rows(self, institution_model, report_model):

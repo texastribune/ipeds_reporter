@@ -2,10 +2,19 @@ import os
 
 from django.test import TestCase
 
-from ..utils import import_mvl
+from ..utils import IpedsCSVReader, import_mvl
 
 
 BASE_DIR = os.path.dirname(__file__)
+
+
+class IpedsCSVReaderTest(TestCase):
+    def test_it_works(self):
+        with open(os.path.join(BASE_DIR, 'support', 'Data_7-20-2014.csv')) as fh:
+            reader = IpedsCSVReader(fh)
+            print reader.header
+            print reader.years_data
+            print reader.explain_header()
 
 
 class ImportMVLTest(TestCase):
