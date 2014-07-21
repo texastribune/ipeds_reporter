@@ -48,14 +48,21 @@ class IpedsCSVReader(object):
         """
         header = self._reader.next()
         self.header = header
-        years = defaultdict(list)
-        for idx, cell in enumerate(header[2:]):
+        header_parsed = [None for __ in header]
+        # the first two columns are the institution id and name
+        for idx, cell in enumerate(header[2:], start=2):
             if not cell:
                 continue
-            print idx, cell
-            name, year = re.match(r'([A-Z0-9]+)\s\((\w+)\)', cell).groups()
-            years[year].append((idx, name))
-        self.years_data = years
+            short_name, raw_code = re.match(r'([A-Z0-9]+)\s\((\w+)\)', cell).groups()
+            # XXX begin copy pasted from models.py
+            butts = re.match(r'(DRV)?([a-zA-Z]+)(\d{4})', raw_code).groups()
+            __, code, year = butts
+            if int(year[:2]) == int(year[2:]) - 1:
+                # I've only found post Y2K years this has happened
+                year = u'20' + year[:2]
+            # XXX end
+            header_parsed[idx] = short_name, year, raw_code
+        self.header_parsed = header_parsed
 
     def parse_rows(self, institution_model, report_model):
         """

@@ -13,8 +13,7 @@ class IpedsCSVReaderTest(TestCase):
         with open(os.path.join(BASE_DIR, 'support', 'Data_7-20-2014.csv')) as fh:
             reader = IpedsCSVReader(fh)
             print reader.header
-            print reader.years_data
-            print reader.explain_header()
+            print reader.header_parsed
 
 
 class ImportMVLTest(TestCase):
