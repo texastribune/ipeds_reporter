@@ -38,3 +38,13 @@ Exporting all variables:
 3. Click the "Select all ... variables" link to select more than the first page
 4. Select the "Make MVL" admin action
 5. Save that file someplace special
+
+
+Heroku
+------
+
+You can play with a public [Heroku install]. Log in with the username `guest`
+and the password `guest`. You'll be able to browse and make MVL files, but not
+create or upload new variables.
+
+  [Heroku install]: https://ipeds-reporter.herokuapp.com/
