@@ -8,7 +8,7 @@ from project_runpy import env
 
 SECRET_KEY = env.get('SECRET_KEY', 'Rotom')
 
-DEBUG = env.get('DEBUG', True)
+DEBUG = env.get('DEBUG', False)
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*']  # TODO

@@ -49,6 +49,18 @@ class Variable(models.Model):
     def __unicode__(self):
         return u'{} ({})'.format(self.short_name, self.year)
 
+    # CUSTOM PROPERTIES #
+
+    @property
+    def is_derived(self):
+        """Was this variable derived?"""
+        return self.raw.startswith('DRV')
+
+    @property
+    def is_revised(self):
+        """Was this variable revised?"""
+        return self.raw.split('|', 2)[0].endswith('_RV')
+
 
 class Importer(models.Model):
     """

@@ -54,3 +54,23 @@ class VariableManagerTest(TestCase):
         row = 'FOO1011|FOO|Foo|Fooey||||||||||||||||||||||||'
         variable, created = Variable.objects.get_or_create_from_mvl(row)
         self.assertEqual(variable.year, '2010')
+
+
+class VariableTest(TestCase):
+    def test_is_derived_works(self):
+        row = 'FOO0203|FOO|Foo|Fooey||||||||||||||||||||||||'
+        variable, __ = Variable.objects.get_or_create_from_mvl(row)
+        self.assertFalse(variable.is_derived)
+
+        row = 'DRVFOO0203|FOO|Foo|Fooey||||||||||||||||||||||||'
+        variable, __ = Variable.objects.get_or_create_from_mvl(row)
+        self.assertTrue(variable.is_derived)
+
+    def test_is_revised_works(self):
+        row = 'FOO0203|FOO|Foo|Fooey||||||||||||||||||||||||'
+        variable, __ = Variable.objects.get_or_create_from_mvl(row)
+        self.assertFalse(variable.is_revised)
+
+        row = 'FOO0203_RV|FOO|Foo|Fooey||||||||||||||||||||||||'
+        variable, __ = Variable.objects.get_or_create_from_mvl(row)
+        self.assertTrue(variable.is_revised)

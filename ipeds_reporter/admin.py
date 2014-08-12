@@ -5,11 +5,20 @@ from .utils import import_mvl
 
 
 class VariableAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'year', 'code', 'short_name', 'category', 'favorite')
+    list_display = ('long_name', 'year', 'code', 'short_name', 'category',
+        'is_derived', 'is_revised', 'favorite', )
     list_filter = ('code', 'short_name', 'year', 'favorite')
     list_per_page = 250  # limit of 250 variables per report
     readonly_fields = ('code', 'short_name', 'category', 'long_name', 'raw', 'year')
     search_fields = ('category', 'long_name')
+
+    def is_derived(self, obj):
+        return obj.is_derived
+    is_derived.boolean = True
+
+    def is_revised(self, obj):
+        return obj.is_revised
+    is_revised.boolean = True
 
     def make_MVL(self, request, queryset):
         from django.http import HttpResponse
