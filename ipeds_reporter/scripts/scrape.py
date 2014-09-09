@@ -4,6 +4,7 @@
 WIP thing to scrape ipeds for me.
 
 Usage:
+    ./scrape.py test
     ./scrape.py <uid_file_path>
 """
 from docopt import docopt
@@ -63,6 +64,13 @@ def main(uid_file_path):
     driver.close()
 
 
+def test():
+    pass
+
+
 if __name__ == '__main__':
     arguments = docopt(__doc__)
-    main(uid_file_path=arguments['<uid_file_path>'])
+    if arguments['test']:
+        test()
+    else:
+        main(uid_file_path=arguments['<uid_file_path>'])
