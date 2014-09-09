@@ -10,12 +10,29 @@ Usage:
 from docopt import docopt
 from selenium import webdriver
 from project_runpy import env
+import requests
 
 
 def get_uids(path):
     with open(path) as f:
         institutions = f.readlines()
     return [x.split('|', 2)[0] for x in institutions]
+
+
+def download_data(driver):
+    """Get info from webdriver and use requests to download a csv."""
+    # FIXME does not work
+    cookies = {x['name']: x['value'] for x in driver.get_cookies()}
+    post_data = driver.execute_script('return $("form:eq(1)").serialize();')
+    url = 'http://nces.ed.gov/ipeds/datacenter/Data.aspx'
+    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'
+    response = requests.post(url,
+        cookies=cookies,
+        headers={
+            'Referer': url,
+            'User-Agent': user_agent,
+        },
+    )
 
 
 def main(uid_file_path):
@@ -57,9 +74,13 @@ def main(uid_file_path):
     driver.find_element_by_id('ctl00_contentMainBody_iActionButton').click()  # submit
     # select "Short variable name"
     driver.find_element_by_id('ctl00_contentPlaceHolder_rbShortVariableName').click()
-    # TODO download report
-    # TODO clear variables
-    # pause until user input
+    # Download Report
+    # download_data(driver)
+    driver.find_element_by_id('ctl00_contentPlaceHolder_imgbtnGetCustomDataSet').click()
+
+    # Clear Variables
+    driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?delete=true')
+    # Pause until user input
     raw_input('Press Enter to end.')  # DELETEME DEBUG
     driver.close()
 
