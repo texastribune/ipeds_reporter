@@ -50,7 +50,7 @@ def download_data(driver):
     )
 
 
-def main(uid_path, mvl_path):
+def get_csvs(uid_path, mvl_path):
     STEP_2 = 'http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2'
     # Validate inputs
     if not os.path.isfile(uid_path):
@@ -109,8 +109,7 @@ def main(uid_path, mvl_path):
         if i < len(mvl_files):
             driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?delete=true')
 
-    # Pause until user input
-    raw_input('Press Enter to end.')  # DELETEME DEBUG
+    # raw_input('Press Enter to finish.')  # DELETEME DEBUG
     driver.close()
 
 
@@ -118,9 +117,13 @@ def test():
     pass
 
 
-if __name__ == '__main__':
+def main():
     arguments = docopt(__doc__)
     if arguments['test']:
         test()
     else:
-        main(uid_path=arguments['--uid'], mvl_path=arguments['--mvl'])
+        get_csvs(uid_path=arguments['--uid'], mvl_path=arguments['--mvl'])
+
+
+if __name__ == '__main__':
+    main()
