@@ -1,11 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-WIP thing to scrape ipeds for me.
+Thing to automate getting custom reports from IPEDS.
 
 Usage:
-    ./scrape.py test
-    ./scrape.py --uid=<uid_path> --mvl=<mvl_path>
+  ./scrape.py test
+  ./scrape.py --uid=<uid_path> --mvl=<mvl_path>
+
+Options:
+  --uid=FILE   Path to .uid file
+  --mvl=PATH   Path to .mvl file or directory containing .mvl files
+
+You also need to setup the IPEDS_EMAIL and IPEDS_PASSWORD environment variables
+so the script can login.
+
+If you have many .mvl files, you should use a directory for --mvl because it'll
+be *much* faster.
 """
 from glob import iglob  # oh my glob!
 import os
@@ -55,8 +65,6 @@ def main(uid_path, mvl_path):
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
     # start session
     driver.get('http://nces.ed.gov/ipeds/datacenter/')
-    # Go back to the Data Center
-    driver.get('http://nces.ed.gov/ipeds/datacenter/')
     # "Compare Institutions"
     driver.find_element_by_id('tdInstData').click()
     # > sent to http://nces.ed.gov/ipeds/datacenter/login.aspx
@@ -78,10 +86,8 @@ def main(uid_path, mvl_path):
     driver.find_element_by_id('tbPowerUserEmail').send_keys(env.require('IPEDS_EMAIL'))
     driver.find_element_by_id('tbPowerUserPassword').send_keys(env.require('IPEDS_PASSWORD'))
     driver.find_element_by_id('ibtnLogin').click()  # submit
-    # Go back to this screen
     for i, mvl_file_path in enumerate(mvl_files, start=1):
-        # if driver.current_url != 'http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2':
-        #     driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2')
+        # Go back to this screen
         driver.get('http://nces.ed.gov/ipeds/datacenter/UploadMasterList.aspx?stepId=2')
         ################ upload mvl
         field = driver.find_element_by_id('ctl00_contentPlaceHolder_fulFile')
