@@ -12,7 +12,9 @@ Options:
   --mvl=PATH   Path to .mvl file or directory containing .mvl files
 
 You also need to setup the IPEDS_EMAIL and IPEDS_PASSWORD environment variables
-so the script can login.
+so the script can login. Currently uses the Chrome webdriver because FireFox is
+broken right now. You can download it at:
+http://chromedriver.storage.googleapis.com/index.html
 
 If you have many .mvl files, you should use a directory for --mvl because it'll
 be *much* faster.
