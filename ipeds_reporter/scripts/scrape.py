@@ -18,10 +18,8 @@ def get_uids(path):
 
 
 def main(uid_file_path):
-    print 'driver'
     driver = webdriver.Chrome()  # DELETEME Chrome can go to Hell
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
-    print 'start'
     # start session
     driver.get('http://nces.ed.gov/ipeds/datacenter/')
     # Go back to the Data Center
@@ -32,9 +30,8 @@ def main(uid_file_path):
     # TODO explicitly click "use final release data"
     driver.find_element_by_id('ibtnLoginLevelOne').click()
     # > sent to http://nces.ed.gov/ipeds/datacenter/InstitutionByName.aspx
-    field = driver.find_element_by_id('tbInstitutionSearch')
-    uids = get_uids(uid_file_path)
-    field.send_keys(u','.join(uids))  # this is so slow!
+    driver.execute_script('$("#tbInstitutionSearch").val("{}")'
+        .format(u','.join(get_uids(uid_file_path))))
     driver.find_element_by_id('ctl00_contentPlaceHolder_ibtnSelectInstitutions').click()
     # > sent to "1. Select Institutions" part two - checkboxes
     driver.execute_script('CheckGVInstitutions()')
@@ -50,7 +47,20 @@ def main(uid_file_path):
     driver.find_element_by_id('ibtnLogin').click()  # submit
     # Go back to this screen
     driver.get('http://nces.ed.gov/ipeds/datacenter/UploadMasterList.aspx?stepId=2')
-    # driver.close()
+    ################ upload mvl
+    # TODO loop through .mvl files
+    field = driver.find_element_by_id('ctl00_contentPlaceHolder_fulFile')
+    field.send_keys('/Users/crc/Dropbox-old/Data/Education-Higher/IPEDS/custom_reports/prices.mvl')
+    driver.find_element_by_id('ctl00_contentPlaceHolder_ibtnSubmit').click()  # submit
+    driver.find_element_by_xpath('//a[text()="Select all"]').click()
+    driver.find_element_by_id('ctl00_contentMainBody_iActionButton').click()  # submit
+    # select "Short variable name"
+    driver.find_element_by_id('ctl00_contentPlaceHolder_rbShortVariableName').click()
+    # TODO download report
+    # TODO clear variables
+    # pause until user input
+    raw_input('Press Enter to end.')  # DELETEME DEBUG
+    driver.close()
 
 
 if __name__ == '__main__':
