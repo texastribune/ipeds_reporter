@@ -7,6 +7,7 @@ Usage:
     ./scrape.py test
     ./scrape.py --uid=<uid_path> --mvl=<mvl_path>
 """
+from glob import iglob  # oh my glob!
 import os
 
 from docopt import docopt
@@ -38,10 +39,18 @@ def download_data(driver):
 
 
 def main(uid_path, mvl_path):
+    STEP_2 = 'http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2'
+    # Validate inputs
     if not os.path.isfile(uid_path):
-        exit('.uid file must exist')
+        exit('Exiting: .uid file must exist')
     if not os.path.exists(mvl_path):
-        exit('.mvl must exist')
+        exit('Exiting: .mvl must exist')
+    if os.path.isfile(mvl_path):
+        mvl_files = [mvl_path]
+    else:
+        mvl_files = list(iglob(os.path.join(mvl_path, '*.mvl')))
+    if not mvl_files:
+        exit('Exiting no .mvl files found')
     driver = webdriver.Chrome()  # DELETEME Chrome can go to Hell
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
     # start session
@@ -70,22 +79,28 @@ def main(uid_path, mvl_path):
     driver.find_element_by_id('tbPowerUserPassword').send_keys(env.require('IPEDS_PASSWORD'))
     driver.find_element_by_id('ibtnLogin').click()  # submit
     # Go back to this screen
-    driver.get('http://nces.ed.gov/ipeds/datacenter/UploadMasterList.aspx?stepId=2')
-    ################ upload mvl
-    # TODO loop through .mvl files
-    field = driver.find_element_by_id('ctl00_contentPlaceHolder_fulFile')
-    field.send_keys(mvl_path)
-    driver.find_element_by_id('ctl00_contentPlaceHolder_ibtnSubmit').click()  # submit
-    driver.find_element_by_xpath('//a[text()="Select all"]').click()
-    driver.find_element_by_id('ctl00_contentMainBody_iActionButton').click()  # submit
-    # select "Short variable name"
-    driver.find_element_by_id('ctl00_contentPlaceHolder_rbShortVariableName').click()
-    # Download Report
-    # download_data(driver)
-    driver.find_element_by_id('ctl00_contentPlaceHolder_imgbtnGetCustomDataSet').click()
+    for i, mvl_file_path in enumerate(mvl_files, start=1):
+        # if driver.current_url != 'http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2':
+        #     driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2')
+        driver.get('http://nces.ed.gov/ipeds/datacenter/UploadMasterList.aspx?stepId=2')
+        ################ upload mvl
+        field = driver.find_element_by_id('ctl00_contentPlaceHolder_fulFile')
+        field.send_keys(mvl_file_path)
+        driver.find_element_by_id('ctl00_contentPlaceHolder_ibtnSubmit').click()  # submit
+        driver.find_element_by_xpath('//a[text()="Select all"]').click()
+        driver.find_element_by_id('ctl00_contentMainBody_iActionButton').click()  # submit
 
-    # Clear Variables
-    driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?delete=true')
+        # select "Short variable name"
+        driver.find_element_by_id('ctl00_contentPlaceHolder_rbShortVariableName').click()
+
+        # Download Report
+        # download_data(driver)
+        driver.find_element_by_id('ctl00_contentPlaceHolder_imgbtnGetCustomDataSet').click()
+
+        # Clear Variables
+        if i < len(mvl_files):
+            driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?delete=true')
+
     # Pause until user input
     raw_input('Press Enter to end.')  # DELETEME DEBUG
     driver.close()
