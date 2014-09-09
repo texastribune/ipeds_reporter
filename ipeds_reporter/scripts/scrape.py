@@ -5,8 +5,10 @@ WIP thing to scrape ipeds for me.
 
 Usage:
     ./scrape.py test
-    ./scrape.py <uid_file_path>
+    ./scrape.py --uid=<uid_path> --mvl=<mvl_path>
 """
+import os
+
 from docopt import docopt
 from selenium import webdriver
 from project_runpy import env
@@ -35,7 +37,11 @@ def download_data(driver):
     )
 
 
-def main(uid_file_path):
+def main(uid_path, mvl_path):
+    if not os.path.isfile(uid_path):
+        exit('.uid file must exist')
+    if not os.path.exists(mvl_path):
+        exit('.mvl must exist')
     driver = webdriver.Chrome()  # DELETEME Chrome can go to Hell
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
     # start session
@@ -49,7 +55,7 @@ def main(uid_file_path):
     driver.find_element_by_id('ibtnLoginLevelOne').click()
     # > sent to http://nces.ed.gov/ipeds/datacenter/InstitutionByName.aspx
     driver.execute_script('$("#tbInstitutionSearch").val("{}")'
-        .format(u','.join(get_uids(uid_file_path))))
+        .format(u','.join(get_uids(uid_path))))
     driver.find_element_by_id('ctl00_contentPlaceHolder_ibtnSelectInstitutions').click()
     # > sent to "1. Select Institutions" part two - checkboxes
     driver.execute_script('CheckGVInstitutions()')
@@ -68,7 +74,7 @@ def main(uid_file_path):
     ################ upload mvl
     # TODO loop through .mvl files
     field = driver.find_element_by_id('ctl00_contentPlaceHolder_fulFile')
-    field.send_keys('/Users/crc/Dropbox-old/Data/Education-Higher/IPEDS/custom_reports/prices.mvl')
+    field.send_keys(mvl_path)
     driver.find_element_by_id('ctl00_contentPlaceHolder_ibtnSubmit').click()  # submit
     driver.find_element_by_xpath('//a[text()="Select all"]').click()
     driver.find_element_by_id('ctl00_contentMainBody_iActionButton').click()  # submit
@@ -94,4 +100,4 @@ if __name__ == '__main__':
     if arguments['test']:
         test()
     else:
-        main(uid_file_path=arguments['<uid_file_path>'])
+        main(uid_path=arguments['--uid'], mvl_path=arguments['--mvl'])
