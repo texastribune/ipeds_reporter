@@ -4,8 +4,8 @@
 Thing to automate getting custom reports from IPEDS.
 
 Usage:
-  ./scrape.py test
-  ./scrape.py --uid=<uid_path> --mvl=<mvl_path>
+  ./csv_downloader.py test
+  ./csv_downloader.py --uid=<uid_path> --mvl=<mvl_path>
 
 Options:
   --uid=FILE   Path to .uid file

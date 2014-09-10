@@ -4,16 +4,23 @@ IPEDS Importer
 The purpose of this is to make it easier to interact with the [IPEDS Data
 Center](nces.ed.gov/ipeds/datacenter/Default.aspx)
 
-If you've built your variables in the report builder, you'll find that your
-reports are limited to 250 variables. This can be a problem because just
-getting a report with test scores will take up 207 variables. Juggling the MVL
-files to upload reports can be a pain, but that's still easier than dealing
-with creating a new set of variables.
+This project consists of several components:
+
+1. MVL Generator -- If you've built your variables in the report builder,
+   you'll find that your reports are limited to 250 variables. This can be a
+   problem because just getting a report with test scores will take up 207
+   variables. Juggling the MVL files to upload reports can be a pain, but
+   that's still easier than dealing with creating a new set of variables.
+
+2. CSV Downloader -- Once you have a lot of MVL variable files, running reports
+   gets tedious very quickly. The CSV Downloader automates running "Compare
+   Institution" reports.
 
 
+MVL Generator
+-------------
 
-Usage
------
+### Usage
 
 Running this project assumes you're familiar with running Python projects.
 Beyond that, it's not too bad.
@@ -40,11 +47,18 @@ Exporting all variables:
 5. Save that file someplace special
 
 
-Heroku
-------
+### Heroku
 
 You can play with a public [Heroku install]. Log in with the username `guest`
 and the password `guest`. You'll be able to browse and make MVL files, but not
 create or upload new variables.
 
   [Heroku install]: https://ipeds-reporter.herokuapp.com/
+
+
+CSV Downloader
+--------------
+
+A CLI that launches a browser (using Selenium):
+
+    csvdownloader/csv_downloader.py --help
