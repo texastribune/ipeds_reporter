@@ -3,22 +3,20 @@ from __future__ import absolute_import
 from collections import defaultdict, namedtuple
 import csv
 import logging
-import os
+# import os
 import re
 
 from project_runpy import ColorizingStreamHandler
 # from utils.handlers import JSONFileHandler
 
-from .models import Variable
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(ColorizingStreamHandler())
-logfile = os.environ.get('THEDP_IMPORT_LOGFILE')
-if logfile:
-    pass
-    # TODO
-    # logger.addHandler(JSONFileHandler(logfile))
+# logfile = os.environ.get('THEDP_IMPORT_LOGFILE')
+# if logfile:
+#     pass
+#     TODO
+#     logger.addHandler(JSONFileHandler(logfile))
 
 
 class IpedsCSVReader(object):
@@ -94,6 +92,8 @@ def import_mvl(fh):
     """
     Takes a filehandle and extracts the variable within.
     """
+    from .models import Variable  # avoid django import at the root
+
     counter = 0
     n_created = 0
     for row in fh:
