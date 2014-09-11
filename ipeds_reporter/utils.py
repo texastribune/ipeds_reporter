@@ -52,7 +52,7 @@ class IpedsCSVReader(object):
             # DELETEME this is just a hack to get around the last empty col
             if not cell:
                 continue
-            short_name, raw_code = re.match(r'([A-Z0-9]+)\s\((\w+)\)', cell).groups()
+            short_name, raw_code = re.match(r'(\w+)\s\((\w+)\)', cell).groups()
             # XXX begin copy pasted from models.py
             butts = re.match(r'(DRV)?([a-zA-Z]+)(\d{4})', raw_code).groups()
             __, code, year = butts
