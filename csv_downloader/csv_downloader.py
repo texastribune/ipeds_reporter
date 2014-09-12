@@ -109,7 +109,8 @@ def get_csvs(uid_path, mvl_path):
         if i < len(mvl_files):
             driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?delete=true')
 
-    # raw_input('Press Enter to finish.')  # DELETEME DEBUG
+    # Wait. Otherwise Selenium closes the browser before download finishes
+    raw_input('Press Enter to finish.')
     driver.close()
 
 
