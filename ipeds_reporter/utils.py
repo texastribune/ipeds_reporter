@@ -1,22 +1,6 @@
-from __future__ import absolute_import
-
 from collections import defaultdict, namedtuple
 import csv
-import logging
-# import os
 import re
-
-from project_runpy import ColorizingStreamHandler
-# from utils.handlers import JSONFileHandler
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger.addHandler(ColorizingStreamHandler())
-# logfile = os.environ.get('THEDP_IMPORT_LOGFILE')
-# if logfile:
-#     pass
-#     TODO
-#     logger.addHandler(JSONFileHandler(logfile))
 
 
 class IpedsCSVReader(object):
@@ -53,7 +37,7 @@ class IpedsCSVReader(object):
             if not cell:
                 continue
             short_name, raw_code = re.match(r'(\w+)\s\((\w+)\)', cell).groups()
-            # XXX begin copy pasted from models.py
+            # XXX begin copy pasted from ipeds_reporter/models.py
             butts = re.match(r'(DRV)?([a-zA-Z]+)(\d{4})', raw_code).groups()
             __, code, year = butts
             if int(year[:2]) == int(year[2:]) - 1:
