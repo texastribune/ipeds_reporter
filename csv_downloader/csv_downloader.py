@@ -65,6 +65,7 @@ def get_csvs(uid_path, mvl_path):
         exit('Exiting no .mvl files found')
     driver = webdriver.Chrome()  # DELETEME Chrome can go to Hell
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
+                                    # Firefox driver needs waits to work.
     # start session
     driver.get('http://nces.ed.gov/ipeds/datacenter/')
     # "Compare Institutions"
