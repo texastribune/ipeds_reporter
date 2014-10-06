@@ -65,6 +65,8 @@ def get_csvs(uid_path, mvl_path):
         mvl_files = list(iglob(os.path.join(mvl_path, '*.mvl')))
     if not mvl_files:
         exit('Exiting no .mvl files found')
+    # sanitize: the browser expects files to be absolute paths
+    mvl_files = map(os.path.abspath, mvl_files)
     driver = webdriver.Chrome()  # DELETEME Chrome can go to Hell
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
                                     # Firefox driver needs waits to work.
