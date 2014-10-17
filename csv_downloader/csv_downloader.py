@@ -52,6 +52,8 @@ def download_data(driver):
 
 def get_csvs(uid_path, mvl_path):
     STEP_2 = 'http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2'
+    ipeds_email = env.require('IPEDS_EMAIL')
+    ipeds_password = env.require('IPEDS_PASSWORD')
     # Validate inputs
     if not os.path.isfile(uid_path):
         exit('Exiting: .uid file must exist')
@@ -63,8 +65,11 @@ def get_csvs(uid_path, mvl_path):
         mvl_files = list(iglob(os.path.join(mvl_path, '*.mvl')))
     if not mvl_files:
         exit('Exiting no .mvl files found')
+    # sanitize: the browser expects files to be absolute paths
+    mvl_files = map(os.path.abspath, mvl_files)
     driver = webdriver.Chrome()  # DELETEME Chrome can go to Hell
     # driver = webdriver.Firefox()  # XXX Firefox, why do you keep breaking?
+                                    # Firefox driver needs waits to work.
     # start session
     driver.get('http://nces.ed.gov/ipeds/datacenter/')
     # "Compare Institutions"
@@ -85,8 +90,8 @@ def get_csvs(uid_path, mvl_path):
     driver.get('http://nces.ed.gov/ipeds/datacenter/UploadMasterList.aspx?stepId=2')
     # login to enable upload by variable
     driver.get('http://nces.ed.gov/ipeds/datacenter/PowerUserLogin.aspx')
-    driver.find_element_by_id('tbPowerUserEmail').send_keys(env.require('IPEDS_EMAIL'))
-    driver.find_element_by_id('tbPowerUserPassword').send_keys(env.require('IPEDS_PASSWORD'))
+    driver.find_element_by_id('tbPowerUserEmail').send_keys(ipeds_email)
+    driver.find_element_by_id('tbPowerUserPassword').send_keys(ipeds_password)
     driver.find_element_by_id('ibtnLogin').click()  # submit
     for i, mvl_file_path in enumerate(mvl_files, start=1):
         # Go back to this screen
@@ -109,7 +114,8 @@ def get_csvs(uid_path, mvl_path):
         if i < len(mvl_files):
             driver.get('http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?delete=true')
 
-    # raw_input('Press Enter to finish.')  # DELETEME DEBUG
+    # Wait. Otherwise Selenium closes the browser before download finishes
+    raw_input('Press Enter to finish.')
     driver.close()
 
 
