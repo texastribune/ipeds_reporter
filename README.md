@@ -2,7 +2,7 @@ IPEDS Importer
 ==============
 
 The purpose of this is to make it easier to interact with the [IPEDS Data
-Center](nces.ed.gov/ipeds/datacenter/Default.aspx)
+Center](http://nces.ed.gov/ipeds/datacenter/Default.aspx)
 
 This project consists of several components:
 
