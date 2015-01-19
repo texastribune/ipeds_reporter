@@ -13,7 +13,8 @@ Options:
 
 You also need to setup the IPEDS_EMAIL and IPEDS_PASSWORD environment variables
 so the script can login. Currently uses the Chrome webdriver because FireFox is
-broken right now. You can download it at:
+broken right now. In OSX, you can install it wih `brew install chromedriver`.
+You can also download it at:
 http://chromedriver.storage.googleapis.com/index.html
 
 If you have many .mvl files, you should use a directory for --mvl because it'll
@@ -51,7 +52,6 @@ def download_data(driver):
 
 
 def get_csvs(uid_path, mvl_path):
-    STEP_2 = 'http://nces.ed.gov/ipeds/datacenter/mastervariablelist.aspx?stepId=2'
     ipeds_email = env.require('IPEDS_EMAIL')
     ipeds_password = env.require('IPEDS_PASSWORD')
     # Validate inputs
