@@ -14,6 +14,7 @@ Options:
 You also need to setup the IPEDS_EMAIL and IPEDS_PASSWORD environment variables
 so the script can login. Currently uses the Chrome webdriver because FireFox is
 broken right now. In OSX, you can install it wih `brew install chromedriver`.
+In Ubuntu, it's `apt-get install chromium-chromedriver`.
 You can also download it at:
 http://chromedriver.storage.googleapis.com/index.html
 
